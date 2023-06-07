@@ -34,7 +34,17 @@ export default class App extends React.Component() {
   selectAnswer = (selectedAnswer, nextQuestionId) => {
     switch (true) {
       case nextQuestionId === "init":
-        this.displayNextQuestion(nextQuestionId);
+        setTimeout(() => {
+          this.displayNextQuestion(nextQuestionId);
+        });
+        break;
+      //nextIdがURLのときは外部のページに飛ばしたい
+      //test
+      case (/^https:*/.test(nextQuestionId)):
+        const a = document.createElement('a');
+        a.href = nextQuestionId;//リンク（nextQuestionId）を渡す
+        a.target = '_blank';//別タブで開く
+        a.click();
         break;
       default:
         const chats = this.state.chats;
@@ -47,7 +57,9 @@ export default class App extends React.Component() {
           chats: chats,
         });
 
-        this.displayNextQuestion(nextQuestionId);
+        setTimeout(() => {
+          this.displayNextQuestion(nextQuestionId);
+        }, 1000);
         break;
     }
   };
@@ -57,12 +69,22 @@ export default class App extends React.Component() {
     this.selectAnswer(initAnswer, this.state.currentId);
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const scrollArea = document.getElementById("scroll-area");
+    if (scrollArea) {
+      scrollArea.scrollTop = scrollArea.scrollHeight;
+    }
+  }
+
   render() {
     return (
       <section className="c-section">
         <div className="c-box">
           <Chats chats={this.state.chats}></Chats>
-          <AnswersList answers={this.state.answers} select={this.selectAnswer}></AnswersList>
+          <AnswersList
+            answers={this.state.answers}
+            select={this.selectAnswer}
+          ></AnswersList>
         </div>
       </section>
     );
