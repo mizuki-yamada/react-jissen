@@ -2,6 +2,7 @@ import "./assets/styles/style.css";
 import defaultDataset from "./dataset";
 import React from "react";
 import { AnswersList, Chats } from "./components";
+import FormDialog from "./components/Forms/FormDialog";
 
 export default class App extends React.Component() {
   constructor(props) {
@@ -15,6 +16,9 @@ export default class App extends React.Component() {
     };
 
     this.selectAnswer = this.selectAnswer.bind(this);
+    this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    
   }
 
   displayNextQuestion = (nextQuestionId) => {
@@ -38,12 +42,15 @@ export default class App extends React.Component() {
           this.displayNextQuestion(nextQuestionId);
         });
         break;
+      case (nextQuestionId === "contact"):
+        this.handleClickOpen();
+        break;
       //nextIdがURLのときは外部のページに飛ばしたい
       //test
-      case (/^https:*/.test(nextQuestionId)):
-        const a = document.createElement('a');
-        a.href = nextQuestionId;//リンク（nextQuestionId）を渡す
-        a.target = '_blank';//別タブで開く
+      case /^https:*/.test(nextQuestionId):
+        const a = document.createElement("a");
+        a.href = nextQuestionId; //リンク（nextQuestionId）を渡す
+        a.target = "_blank"; //別タブで開く
         a.click();
         break;
       default:
@@ -62,6 +69,14 @@ export default class App extends React.Component() {
         }, 1000);
         break;
     }
+  };
+
+  handleClickOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
   };
 
   componentDidMount() {
@@ -85,6 +100,7 @@ export default class App extends React.Component() {
             answers={this.state.answers}
             select={this.selectAnswer}
           ></AnswersList>
+          <FormDialog open={this.state.open} handleClose={this.handleClose}></FormDialog>
         </div>
       </section>
     );
