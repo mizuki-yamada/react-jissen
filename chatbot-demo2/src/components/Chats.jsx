@@ -1,21 +1,23 @@
 import * as React from "react";
 import List from "@mui/material/List";
-import { makeStyles } from "@mui/material";
+import { makeStyles,createStyles } from "@mui/material";
 import { Chat } from "./index";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    maxWidth: "36ch",
-    backgroundColor: theme.pallet.background.paper,
-  },
-}));
+const useStyles = makeStyles(() => (
+  createStyles({
+    "chats": {
+      height:400,
+      padding:'0',
+      overflow:'auto',
+    }
+  })
+));
 
 const Chats = (props) => {
   const classes = useStyles();
 
   return (
-    <List className={classes.root}>
+    <List className={classes.chats}>
       {props.chats.map((chat, index) => {
           <Chat text={chat.text} type={chat.type} key={index.toString()}></Chat>;
       })}
